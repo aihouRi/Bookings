@@ -6,8 +6,10 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"github.com/aihou/bookings/pkg/models"
+
 	"github.com/aihou/bookings/pkg/config"
+	"github.com/aihou/bookings/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 //var functions = template.FuncMap{}
@@ -19,12 +21,13 @@ func Newtemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // RenderTemplate renders templates using html/template
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		//get the template cache from the app config
@@ -40,6 +43,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 
 	//这里是创建一个缓冲区，然后将模板渲染到缓冲区中
 	buf := new(bytes.Buffer)
+
+	td = AddDefaultData(td, r)
 
 	//这里的Execute的作用是将模板渲染到缓冲区中
 	_ = t.Execute(buf, td)
@@ -59,7 +64,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	//get all of the files named *.page.tmpl.html from ./templates
-	pages, err := filepath.Glob("./templates/*.page.tmpl.html")
+	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
 		return myCache, err
 	}
@@ -68,22 +73,22 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		//extract the file name
 		//filepath.Base的作用是返回路径的最后一个元素，比如说
-		//./templates/home.page.tmpl.html，返回的就是home.page.tmpl.html
+		//./templates/home.page.tmpl，返回的就是home.page.tmpl
 		//注意这里的filepath.Base函数只拿出文件名，不拿出内容
 		name := filepath.Base(page)
 
 		//这里的template.New(name)是创建一个新的模板，然后用ParseFiles方法，
-		//将模板文件解析到模板中，这里的name是模板的名字，也就是home.page.tmpl.html
+		//将模板文件解析到模板中，这里的name是模板的名字，也就是home.page.tmpl
 		//这里的ts是一个指向模板的指针
 		//ParseFiles的作用是将模板文件解析到模板中，比如说，我们有一个模板文件
-		//home.page.tmpl.html，然后我们用ParseFiles方法将这个模板文件解析到模板中，
+		//home.page.tmpl，然后我们用ParseFiles方法将这个模板文件解析到模板中，
 		//然后我们就可以用这个模板来渲染页面了
 		ts, err := template.New(name).ParseFiles(page)
 		if err != nil {
 			return myCache, err
 		}
 
-		matches, err := filepath.Glob("./templates/*.layout.tmpl.html")
+		matches, err := filepath.Glob("./templates/*.layout.tmpl")
 		if err != nil {
 			return myCache, err
 		}
@@ -92,12 +97,12 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			//比如说，我们有一个模板文件home.layout.tmpl.html，然后我们用ParseGlob方法将
 			//这个模板文件解析到模板中，然后我们就可以用这个模板来渲染页面了
 			//ts可以存入多个模板吗？可以的，ts是一个指向模板的指针，我们可以用ts来存入多个模板
-			ts, err = ts.ParseGlob("./templates/*.layout.tmpl.html")
+			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
 			if err != nil {
 				return myCache, err
 			}
 		}
-		//名称对应内容，比如说home.page.tmpl.html对应的是ts
+		//名称对应内容，比如说home.page.tmpl对应的是ts
 		myCache[name] = ts
 	}
 	return myCache, nil

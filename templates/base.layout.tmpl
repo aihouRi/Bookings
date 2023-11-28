@@ -1,3 +1,4 @@
+{{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,12 +18,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 
     <link rel="stylesheet" href="../static/css/style.css">
-
-    
-    
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
@@ -34,10 +33,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
+                        <a class="nav-link" href="/about">About</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -45,18 +44,18 @@
                             Rooms
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="generals.html">General's Quarters</a></li>
-                            <li><a class="dropdown-item" href="majors.html">Major's Suite</a></li>
+                            <li><a class="dropdown-item" href="/generals-quarters">General's Quarters</a></li>
+                            <li><a class="dropdown-item" href="/majors-suite">Major's Suite</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="reservation.html">Book Now</a>
+                        <a class="nav-link" href="/search-availability">Book Now</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
+                        <a class="nav-link" href="/contact">Contact</a>
                     </li>
                 </ul>
 
@@ -64,40 +63,9 @@
         </div>
     </nav>
 
+    {{block "content" .}}
 
-
-    <div class="container">
-
-        <div class="row">
-
-            <div class="col-md-3"></div>
-
-            <div class="col-md-6">
-                <h1 class="mt-5">Search for Availability</h1>
-
-                <form action="reservation.html" method="get" novalidate class="needs-validation">
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="row" id="reservation-dates">
-                                <div class="col-md-6">
-                                    <input required class="form-control" type="text" name="start" placeholder="Arrival">
-                                </div>
-                                <div class="col-md-6">
-                                    <input required class="form-control" type="text" name="end" placeholder="Departure">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <button type="submit" class="btn btn-primary">Submit</button>
-
-                </form>
-            </div>
-        </div>
-    </div>
+    {{end}}
 
     <div class="row my-footer">
         <div class="col">
@@ -125,6 +93,10 @@
 
     <script src="https://unpkg.com/notie"></script>
 
+    {{block "js" .}}
+
+    {{end}}
+
     <script>
         let attention = Prompt();
 
@@ -150,33 +122,7 @@
         })();
 
 
-        document.getElementById("colorButton").addEventListener("click", function () {
-            let html = `
-            <div class="container text-center">    
-                <form id="check-availability-form" action="" method="post" novalidate       class="needs-validation">
-                    <div class="form-row">
-                        <div class="row" id="reservation-dates-modal">
-                            <div class="col">
-                                <input disabled required class="form-control" type="text" name="start" id="start" placeholder="Arrival">
-                            </div>
-                            <div class="col">
-                                <input disabled required class="form-control" type="text" name="end" id="end" placeholder="Departure">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            `;
-
-            attention.custom({ msg: html, title:"Choose your dates" });
-
-        })
-
-
-        const elem = document.getElementById('reservation-dates');
-        const rangepicker = new DateRangePicker(elem, {
-            format: "yyyy-mm-dd"
-        });
+        
 
 
         function notify(msg, msgType) {
@@ -298,3 +244,5 @@
 </body>
 
 </html>
+
+{{end}}
