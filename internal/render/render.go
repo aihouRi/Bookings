@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/aihou/bookings/pkg/config"
-	"github.com/aihou/bookings/pkg/models"
+	"github.com/aihou/bookings/internal/config"
+	"github.com/aihou/bookings/internal/models"
 	"github.com/justinas/nosurf"
 )
 

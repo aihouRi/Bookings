@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"log"
 	"encoding/json"
-	"github.com/aihou/bookings/pkg/config"
-	"github.com/aihou/bookings/pkg/models"
-	"github.com/aihou/bookings/pkg/render"
+	"github.com/aihou/bookings/internal/config"
+	"github.com/aihou/bookings/internal/models"
+	"github.com/aihou/bookings/internal/render"
 )
 
 // Repo is the repository used by the handlers
@@ -99,7 +99,7 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	log.Println(string(out))
+	
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
 }

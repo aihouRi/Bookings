@@ -199,18 +199,16 @@
                     title = "",
                 } = c;
 
-                const { value: formValues } = await Swal.fire({
+                const { value: result } = await Swal.fire({
                     title: title,
                     html: msg,
                     backdrop: false,
                     focusConfirm: false,
                     showCancelButton: true,
                     willOpen: () => {
-                        const elem = document.getElementById('reservation-dates-modal');
-                        const rp = new DateRangePicker(elem, {
-                            format: "yyyy-mm-dd",
-                            showOnFocus: true,
-                        });
+                        if(c.willOpen !== undefined){
+                            c.willOpen();
+                        }
                     },
                     preConfirm: () => {
                         return [
@@ -219,12 +217,26 @@
                         ];
                     },
                     didOpen: () => {
-                        document.getElementById("start").disabled = false;
-                        document.getElementById("end").disabled = false;
+                        if(c.didOpen !== undefined){
+                            c.didOpen();
+                        }
                     }
                 });
-                if (formValues) {
-                    Swal.fire(JSON.stringify(formValues));
+                if(result){
+                    //if the user clicks cancel, result is false
+                    if(result.dismiss !== Swal.DismissReason.cancel){
+                        //check if the user entered a value
+                        if(result.value !== ""){
+                            //check if the callback is defined
+                            if(c.callback !== undefined){
+                                c.callback(result.value);
+                            }
+                        } else {
+                            c.callback(false);
+                        }
+                    } else {
+                        c.callback(false);
+                    }
                 }
             }
 

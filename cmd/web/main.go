@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/aihou/bookings/pkg/config"
-	"github.com/aihou/bookings/pkg/handlers"
-	"github.com/aihou/bookings/pkg/render"
+	"github.com/aihou/bookings/internal/config"
+	"github.com/aihou/bookings/internal/handlers"
+	"github.com/aihou/bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"time"
 	"log"
