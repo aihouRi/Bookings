@@ -8,3 +8,6 @@ This is the repository for my bookings and reservations project.
 -- Uses [nosurf](https://github.com/justinas/nosurf)
 
 //go run ./cmd/web
+
+//1.icacls run.bat
+//2.run.bat
